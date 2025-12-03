@@ -83,8 +83,18 @@ export async function POST(req) {
       const entry = await addStepToExperiment(experimentId, s3Url, sourceIndex, prompt);
       return NextResponse.json({ success: true, entry });
     }
-    return NextResponse.json({ error: "Geçersiz işlem" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid operation" }, { status: 400 });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+
+    console.error("API Error:", error);
+
+    // EĞER OPENAI 400 DÖNERSE (Safety Filter Hatası)
+    if (error.status === 400) {
+      // OpenAI'ın verdiği "Safety filters" mesajını direkt döndür
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+
+    // Diğer sunucu hataları (500)
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }

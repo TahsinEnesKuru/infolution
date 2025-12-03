@@ -39,7 +39,7 @@ const [view, setView] = useState('HOME');
         setExperimentList(data);
         setView('LIST');
       } else {
-        alert("Henüz hiç deney yok. Lütfen önce yeni bir tane başlatın.");
+        alert("No experiments found. Please start a new one first.");
         setView('HOME');
       }
     } catch (err) {
@@ -75,15 +75,15 @@ const [view, setView] = useState('HOME');
 
     try {
       await fetch('/api/experiment', { method: 'POST', body: formData });
-      alert("Yeni deney başlatıldı! Şimdi listeye dönüp katılabilirsin.");
+      alert("A new experiment has been started! Now you can go back to the list and join.");
       setView('HOME');
     } catch (err) {
-      alert('Yükleme başarısız');
+      alert('Upload failed');
       setView('HOME');
     }
   };
 
-  const handleDescriptionSubmit = async () => {
+    const handleDescriptionSubmit = async () => {
     if (!description) return;
     setView('LOADING');
 
@@ -96,10 +96,22 @@ const [view, setView] = useState('HOME');
     try {
       const res = await fetch('/api/experiment', { method: 'POST', body: formData });
       const data = await res.json();
+
+      // --- YENİ EKLENEN KISIM: HATA KONTROLÜ ---
+      if (!res.ok) {
+        // Backend'den gelen 400 hatasını (OpenAI mesajını) göster
+        alert("Warning: " + data.error); 
+        setView('DESCRIBE'); // Kullanıcıyı tekrar yazma ekranına döndür
+        return; // İşlemi durdur
+      }
+      // ----------------------------------------
+
       setResultEntry(data.entry);
       setView('RESULT');
-    } catch (err) {
-      alert('Üretim başarısız');
+
+    } catch (err:any) {
+      console.error(err);
+      alert('An unexpected error occurred. Please try again.');
       setView('DESCRIBE');
     }
   };
