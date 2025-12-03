@@ -4,16 +4,30 @@ import ExperimentGraph from '@/components/ExperimentGraph';
 import { ArrowsRightLeftIcon, CubeTransparentIcon, BeakerIcon } from '@heroicons/react/24/solid';
 
 export default function Home() {
-  const [view, setView] = useState('HOME'); 
+const [view, setView] = useState('HOME'); 
   const [showMobileGraph, setShowMobileGraph] = useState(false);
+
+  // --- HATA BURADA, BUNLARI GÜNCELLE ---
   
-  const [experimentList, setExperimentList] = useState([]);
-  const [selectedExperimentId, setSelectedExperimentId] = useState(null);
-  const [currentImageCtx, setCurrentImageCtx] = useState(null); 
+  // Eskisi: const [experimentList, setExperimentList] = useState([]);
+  // Yenisi (Dizi olacağı için <any[]> ekle):
+  const [experimentList, setExperimentList] = useState<any[]>([]);
+
+  // Eskisi: const [selectedExperimentId, setSelectedExperimentId] = useState(null);
+  // Yenisi (<any> ekle):
+  const [selectedExperimentId, setSelectedExperimentId] = useState<any>(null);
+
+  // Eskisi: const [currentImageCtx, setCurrentImageCtx] = useState(null);
+  // Yenisi (<any> ekle):
+  const [currentImageCtx, setCurrentImageCtx] = useState<any>(null); 
   
+  // Form states
   const [description, setDescription] = useState('');
   const [newExpName, setNewExpName] = useState('');
-  const [resultEntry, setResultEntry] = useState(null);
+
+  // Eskisi: const [resultEntry, setResultEntry] = useState(null);
+  // Yenisi (<any> ekle):
+  const [resultEntry, setResultEntry] = useState<any>(null);
 
   // --- HANDLERS ---
   const handleShowList = async () => {
@@ -34,7 +48,7 @@ export default function Home() {
     }
   };
 
-  const handleSelectExperiment = async (expId) => {
+  const handleSelectExperiment = async (expId: any) => {
     setView('LOADING');
     setSelectedExperimentId(expId);
     try {
@@ -48,7 +62,7 @@ export default function Home() {
     }
   };
 
-  const handleFileUpload = async (e) => {
+  const handleFileUpload = async (e:any) => {
     e.preventDefault();
     const file = e.target.files[0];
     if (!file) return;
